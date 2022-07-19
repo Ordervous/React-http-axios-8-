@@ -20,9 +20,21 @@ export const ContactProvider = (props) => {
             })
     }
 
+    // function getContact(id) {
+    //     return contacts.find(contact => contact.id === parseInt(id))
+    // } // To demonstrate how to fetch the individual contact, we'll update our function to make the call to the server and display the result.
+
     function getContact(id) {
-        return contacts.find(contact => contact.id === parseInt(id))
-    }
+        return axios.get(`http://localhost:3001/contacts/${id}`)
+          .then(Response =>
+            new Promise((resolve) => resolve(Response.data))
+          )
+      }  // Here we're using axios to get the individual contact for the given id. 
+    //   However, when the Promise from axios resolves, we're returning a new Promise 
+    //   that returns only the contact data. The purpose of this is to insulate the 
+    //   caller from the details of the HTTP response. The caller only needs the contact 
+    //   data, not the axios response object. This would also be the correct place to put 
+    //   any additional error handling before returning to the caller.    
 
     function deleteContact(id) {
         axios.delete(`http://localhost:3001/contacts/${id}`).then(refreshContacts)

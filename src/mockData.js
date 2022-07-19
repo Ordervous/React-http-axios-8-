@@ -1,5 +1,4 @@
 const { faker } = require('@faker-js/faker')
-import faker from 'faker'
 
 module.exports = () => {
   faker.seed(1234567890)
