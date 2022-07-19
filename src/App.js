@@ -1,12 +1,25 @@
 import React from 'react';
-import ContactName from './ContactName'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from './Home'
+import ContactList from './ContactList'
+import Contact from './Contact'
 
 function App() {
   return (
-    <div>
-      <ContactName />
-    </div>
-  );
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />}>
+          <Route index element={<h1>Welcome</h1>}/>
+          <Route path="contacts" element={<ContactList />} >
+            <Route index element={<p>Select a contact for more details</p>}/>
+            <Route path=":contactId" element={<Contact />} />
+            <Route path="*" element={<h1>Contact Not Found</h1>} />
+          </Route>
+        </Route>
+        <Route path="*" element={<h1>Page Not Found</h1>} />
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App

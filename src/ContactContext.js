@@ -4,46 +4,59 @@ import axios from "axios"
 export const ContactContext = createContext()
 
 export const ContactProvider = (props) => {
-  const [contacts, setContacts] = useState([])
+    const [contacts, setContacts] = useState([])
 
-  useEffect(() => {
-    async function getContacts() {
-      await refreshContacts()
+    useEffect(() => {    //we utilize the useEffect hook to run when the component is mounted, and this hook calls an async function
+        async function getContacts() {
+            await refreshContacts()
+        }
+        getContacts() //also supply a simple getContact method that can search for a contact in the list by id and return the object.
+    }, []);
+
+    function refreshContacts() {  // function uses axios to fetch our entire list of contacts and update them in our state. 
+        return axios.get("http://localhost:3001/contacts")
+            .then(response => {
+                setContacts(response.data)
+            })
     }
-    getContacts()
-  }, []);
 
-  function refreshContacts() {
-    return axios.get("http://localhost:3001/contacts")
-      .then(response => {
-        setContacts(response.data)
-      })
-  }
+    function getContact(id) {
+        return contacts.find(contact => contact.id === parseInt(id))
+    }
 
-  function getContact(id) {
-    return contacts.find(contact => contact.id === parseInt(id))
-  }
+    function deleteContact(id) {
+        axios.delete(`http://localhost:3001/contacts/${id}`).then(refreshContacts)
+    } // In deleteContact we call the delete method on axios, passing it the URL of the resource we wish 
+    // to delete which will make the HTTP DELETE call to our json-server.
+    // Since we're not inside a useEffect hook we don't need to be concerned with making the call asynchronous. 
+    // After the contact is deleted, we want to make sure our contact list and UI reflect that change. 
+    // We can simply use the Promise returned from axios to then call our refreshContacts method.
 
-  function deleteContact(id) {
-  }
+    // In this instance we don't need anything from the result of the DELETE HTTP call, so we can simply pass 
+    // a reference to refreshContacts instead of invoking it in an anonymous function.
 
-  function addContact(contact) {
-  }
+    function addContact(contact) {
+    }
 
-  function updateContact(contact) {
-  }
+    function updateContact(contact) {
+    }
 
-  return (
-    <ContactContext.Provider
-      value={{
-        contacts,
-        getContact,
-        deleteContact,
-        addContact,
-        updateContact
-      }}
-    >
-      {props.children}
-    </ContactContext.Provider>
-  )
+    return (
+        <ContactContext.Provider
+            value={{
+                contacts,
+                getContact,
+                deleteContact,
+                addContact,
+                updateContact
+            }}
+        > 
+            {props.children} 
+        </ContactContext.Provider>
+    )
 }
+//we utilize the props.children feature to wrap any content within 
+// our new ContactProvider component's tags
+
+//Since we want to make the ContactContext available to the entire app, 
+// we'll modify our index.js file to wrap our App component:

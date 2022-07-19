@@ -6,7 +6,7 @@ function ContactName() {
 
   useEffect(() => {
     async function getName() {
-      const response = await axios.get("http://localhost:3001/contacts/7")
+      const response = await axios.get("http://localhost:3001/contacts/")
       setName(response.data.name)
     }
     getName()
